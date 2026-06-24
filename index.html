@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Регламент уборки IT-офиса — чек-лист</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --surface:#F4F6F8; --ink:#15191E; --primary:#1F3A5F;
+  --accent:#8A5E27; --muted:#5C6670; --lines:#C8D0D8;
+  --success:#2E7D52; --danger:#A8321E;
+  --serif:'PT Serif', Georgia, 'Times New Roman', 'Liberation Serif', serif;
+  --sans:'PT Sans', 'Segoe UI', 'Helvetica Neue', Roboto, Arial, system-ui, -apple-system, sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--sans); color:var(--ink); background:#E4E8EC;
+  font-size:10.5pt; line-height:1.45; -webkit-font-smoothing:antialiased;
+}
+
+/* ===== TOOLBAR ===== */
+.toolbar{
+  position:sticky; top:0; z-index:50; background:#fff;
+  border-bottom:1px solid var(--lines); box-shadow:0 1px 6px rgba(0,0,0,.06);
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:9px 16px;
+}
+.toolbar .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-weight:700;color:var(--primary);font-size:13.5pt;margin-right:auto;}
+.toolbar .brand .logo{width:26px;height:26px;border-radius:6px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:var(--sans);}
+.toolbar .brand small{display:block;font-family:var(--sans);font-weight:400;color:var(--muted);font-size:8.5pt;line-height:1;margin-top:2px;}
+.btn{
+  font-family:var(--sans); font-size:9.2pt; font-weight:700; cursor:pointer;
+  border:1.4px solid var(--primary); color:var(--primary); background:#fff;
+  border-radius:7px; padding:7px 11px; white-space:nowrap; transition:.12s;
+}
+.btn:hover{background:var(--primary);color:#fff;}
+.btn.ghost{border-color:var(--lines);color:var(--muted);}
+.btn.ghost:hover{background:var(--muted);color:#fff;border-color:var(--muted);}
+.btn.warn{border-color:var(--danger);color:var(--danger);}
+.btn.warn:hover{background:var(--danger);color:#fff;}
+.btn.primary{background:var(--primary);color:#fff;}
+.btn.primary:hover{background:#16293f;}
+.btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.hint{max-width:920px;margin:10px auto 0;padding:0 8px;color:var(--muted);font-size:8.8pt;text-align:center;}
+
+/* ===== PAGE ===== */
+.page{
+  max-width:210mm; margin:14px auto 40px; background:var(--bg);
+  padding:14mm 18mm 16mm 24mm; box-shadow:0 2px 20px rgba(0,0,0,.12);
+}
+
+/* ===== DOC HEADER ===== */
+.doc-header{
+  background:var(--primary); color:#fff; border-radius:8px;
+  padding:16px 20px; display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.doc-header h1{font-family:var(--serif);font-size:19pt;line-height:1.15;margin:0 0 4px;font-weight:700;}
+.doc-header .sub{font-size:9pt;color:#cfdae8;}
+.doc-header .meta{margin-left:auto;border-collapse:collapse;font-size:8.7pt;min-width:230px;}
+.doc-header .meta td{padding:2px 6px;vertical-align:top;}
+.doc-header .meta td.k{color:#aebfd4;text-transform:uppercase;letter-spacing:.04em;font-size:7.6pt;white-space:nowrap;}
+.doc-header .meta td.v{color:#fff;font-weight:700;}
+.accent-rule{height:2.5px;background:var(--accent);border:0;margin:0 0 6px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+
+/* ===== SECTIONS / SPINE ===== */
+.section{position:relative;margin-top:22px;padding-top:2px;break-inside:avoid;}
+.section-num{
+  position:absolute; left:-20mm; top:-2px; font-family:var(--serif); font-weight:700;
+  font-size:21pt; color:var(--primary); line-height:1; -webkit-print-color-adjust:exact;print-color-adjust:exact;
+}
+.section > h2{
+  font-family:var(--serif); font-size:14.5pt; font-weight:700; color:var(--ink);
+  margin:0 0 6px; display:flex; align-items:center; gap:9px; break-after:avoid;
+}
+.section > h2 svg{flex:0 0 auto;color:var(--primary);}
+.hr{height:1px;background:var(--lines);border:0;margin:0 0 11px;}
+.section h3{font-family:var(--sans);font-weight:700;font-size:11.5pt;color:var(--primary);margin:14px 0 6px;break-after:avoid;}
+.lead{color:var(--muted);font-style:italic;border-left:3px solid var(--lines);padding:2px 0 2px 11px;margin:0 0 11px;font-size:9.6pt;}
+p{margin:0 0 8px;}
+
+/* ===== CHECK ITEMS ===== */
+.checks{margin:0;padding:0;list-style:none;}
+.checks.cols{column-count:2;column-gap:26px;column-fill:balance;}
+.check{display:flex;align-items:flex-start;gap:9px;padding:3px 0;break-inside:avoid;-webkit-column-break-inside:avoid;}
+.check input[type=checkbox]{
+  appearance:none;-webkit-appearance:none;width:16px;height:16px;flex:0 0 auto;margin-top:1.5px;
+  border:1.4px solid var(--ink);border-radius:3px;background:#fff;cursor:pointer;position:relative;
+}
+.check input[type=checkbox]:checked{background:var(--primary);border-color:var(--primary);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.check input[type=checkbox]:checked::after{content:"";position:absolute;left:4.5px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+.check .txt{flex:1;}
+.check.req .txt strong{color:var(--ink);}
+
+/* ===== FIELDS ===== */
+.fld{border:none;border-bottom:1px solid var(--ink);background:transparent;font:inherit;color:var(--ink);padding:1px 4px;min-width:90px;}
+.fld:focus{outline:none;border-bottom-color:var(--accent);background:#FFFCF2;}
+.fldrow{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:6px 0;}
+.fldrow label{font-weight:700;color:var(--muted);font-size:9.4pt;}
+.rich{border:none;background:transparent;font:inherit;color:var(--ink);min-height:1.4em;outline:none;}
+.rich:focus{background:#FFFCF2;}
+[data-rich]:empty:before{content:attr(data-ph);color:var(--muted);opacity:.55;pointer-events:none;}
+.lined{
+  background-image:repeating-linear-gradient(transparent,transparent 26px,var(--lines) 26px,var(--lines) 27px);
+  line-height:27px;min-height:81px;padding:1px 6px;border:1px solid var(--lines);border-radius:6px;
+}
+
+/* ===== TABLES ===== */
+table.t{width:100%;border-collapse:collapse;margin:8px 0;font-size:9.3pt;}
+table.t th{background:var(--primary);color:#fff;text-align:left;padding:7px 8px;font-weight:700;font-size:8.8pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+table.t td{border:1px solid var(--lines);padding:6px 8px;vertical-align:top;}
+table.t thead{display:table-header-group;}
+table.t tbody tr:nth-child(even){background:var(--surface);}
+table.t tr{break-inside:avoid;}
+.rec{color:var(--success);font-weight:700;}
+
+/* color dots — triple protection */
+.dot{display:inline-block;width:15px;height:15px;border-radius:50%;vertical-align:-3px;margin-right:7px;border:1px solid rgba(0,0,0,.25);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.dot.red{background:#D24B3E;background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.32) 0 2px,transparent 2px 4px);}
+.dot.blue{background:#2F6FB0;background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.32) 0 2px,transparent 2px 4px);}
+.dot.green{background:#2E7D52;background-image:repeating-linear-gradient(-45deg,rgba(0,0,0,.34) 0 2px,transparent 2px 4px);}
+.dot.yellow{background:#E0A132;background-image:radial-gradient(rgba(0,0,0,.4) 1px,transparent 1.4px);background-size:4px 4px;}
+
+/* ===== ZONE TAG ===== */
+.ztag{display:inline-flex;align-items:center;gap:5px;font-size:8.4pt;font-weight:700;color:var(--muted);border:1px solid var(--lines);border-radius:20px;padding:1px 9px 1px 6px;vertical-align:1px;}
+.ztag .dot{width:10px;height:10px;margin-right:4px;vertical-align:0;}
+
+/* ===== SECTION 4 CARTOUCHE ===== */
+.cartouche{border:1.5px solid var(--accent);border-radius:10px;padding:16px 18px 14px;position:relative;margin-top:6px;}
+.perf{border-top:2px dashed var(--accent);margin:-16px -18px 14px;height:0;}
+.perf-label{position:absolute;top:-9px;right:16px;background:#fff;color:var(--accent);font-size:8pt;font-weight:700;letter-spacing:.05em;padding:0 8px;text-transform:uppercase;}
+.day-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:12px;}
+.day-fields .f{display:flex;flex-direction:column;gap:3px;}
+.day-fields .f label{font-size:8.4pt;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;}
+.progress{margin:6px 0 14px;}
+.progress .track{height:9px;background:var(--surface);border:1px solid var(--lines);border-radius:6px;overflow:hidden;}
+.progress .bar{height:100%;width:0;background:var(--success);transition:width .25s;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.progress .lbl{font-size:8.8pt;color:var(--muted);font-weight:700;margin-top:4px;}
+.subsec{margin-top:13px;}
+.subsec h4{font-family:var(--sans);font-weight:700;font-size:10.4pt;color:var(--ink);margin:0 0 5px;display:flex;align-items:center;gap:7px;break-after:avoid;}
+.subsec h4 .subcount{margin-left:auto;font-size:8.2pt;color:var(--muted);font-weight:700;background:var(--surface);border:1px solid var(--lines);border-radius:12px;padding:0 8px;}
+.subsec .subhr{height:1px;background:var(--lines);border:0;margin:0 0 7px;}
+
+/* ===== DANGER ===== */
+.danger{border:1.4px solid var(--danger);border-left:5px solid var(--danger);border-radius:8px;padding:11px 14px;margin:10px 0;background:#fff;}
+.danger h4{margin:0 0 6px;color:var(--danger);font-weight:700;font-size:10.6pt;display:flex;align-items:center;gap:7px;}
+.danger ul{margin:0;padding-left:18px;}
+.danger li{margin:3px 0;}
+
+/* ===== BRAND SEGMENTS ===== */
+.segs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 14px;}
+.seg{border:1px solid var(--lines);border-radius:8px;padding:10px 12px;break-inside:avoid;}
+.seg .tier{display:flex;align-items:center;gap:7px;font-weight:700;font-size:9.6pt;margin-bottom:4px;}
+.seg .pip{width:10px;height:10px;border-radius:50%;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.seg.gold .pip{background:#C49A3A;} .seg.silver .pip{background:#8A98A6;} .seg.bronze .pip{background:#B07A4A;}
+.seg .tier small{font-weight:400;color:var(--muted);}
+.seg p{font-size:8.8pt;color:var(--muted);margin:0;}
+.seg b{color:var(--ink);}
+
+/* startup kit */
+.kit{list-style:none;margin:8px 0 0;padding:0;}
+.kit li{display:flex;align-items:center;gap:10px;padding:4px 0;border-bottom:1px dotted var(--lines);break-inside:avoid;}
+.kit .name{flex:1;}
+.kit .opt{display:inline-flex;align-items:center;gap:5px;font-size:8.4pt;color:var(--muted);font-weight:700;}
+.kit .opt input{appearance:none;-webkit-appearance:none;width:14px;height:14px;border:1.3px solid var(--ink);border-radius:3px;background:#fff;cursor:pointer;position:relative;}
+.kit .opt input:checked{background:var(--primary);border-color:var(--primary);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.kit .opt input:checked::after{content:"";position:absolute;left:3.6px;top:0.6px;width:3.6px;height:7px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+
+/* acceptance */
+.acc td .rich{display:block;min-height:1.5em;}
+.acc .sig{border-bottom:1px solid var(--ink);min-height:1.6em;display:block;}
+.rowctl{display:flex;gap:8px;margin-top:6px;}
+
+/* footer */
+.doc-footer{margin-top:26px;border-top:1px solid var(--lines);padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:8.4pt;color:var(--muted);flex-wrap:wrap;gap:8px;}
+.doc-footer .rev .fld{min-width:70px;}
+
+/* edit mode highlight */
+body.editing [data-editable]{background:#FFF7DE;outline:1px dashed #E3B341;outline-offset:1px;border-radius:3px;cursor:text;}
+
+/* ===== PRINT ===== */
+@page{size:A4;margin:14mm 18mm 16mm 22mm;}
+@media print{
+  body{background:#fff;color:var(--ink);font-size:10.4pt;}
+  .no-print{display:none !important;}
+  .page{box-shadow:none;margin:0;max-width:none;padding:0;}
+  .section-num{left:-14mm;}
+  h2,h3,h4{break-after:avoid;}
+  .checks.cols{column-count:1;}
+  .check, tr, .seg, .kit li, .subsec{break-inside:avoid;}
+  #sec-4, #sec-8, #sec-9{break-before:page;}
+  input[type=date]::-webkit-calendar-picker-indicator,input[type=time]::-webkit-calendar-picker-indicator{display:none;}
+  [data-rich]:empty:before{content:"";}
+  thead{display:table-header-group;}
+  p,li{orphans:3;widows:3;}
+  .progress, .screen-only{display:none !important;}
+  /* clean blank by default: hide check marks unless print-marks on */
+  body:not(.print-marks) input[type=checkbox]:checked{background:#fff !important;border-color:#000 !important;}
+  body:not(.print-marks) input[type=checkbox]:checked::after{display:none !important;}
+  input[type=checkbox]{border-color:#000 !important;}
+  .lined{min-height:70px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== TOOLBAR ===================== -->
+<div class="toolbar no-print">
+  <div class="brand">
+    <span class="logo">IT</span>
+    <span>Регламент уборки IT-офиса<small>чек-лист · редактируемый шаблон</small></span>
+  </div>
+  <button class="btn" id="editBtn">✎ Редактировать текст</button>
+  <button class="btn" id="marksBtn" aria-pressed="false">🖨 Печать: чистый бланк</button>
+  <button class="btn primary" id="printBtn">⤓ Печать / PDF</button>
+  <button class="btn ghost" id="clearBtn">↺ Очистить чек-лист</button>
+  <button class="btn warn" id="resetBtn">⟲ Сбросить к шаблону</button>
+</div>
+<p class="hint no-print">Отметки и заполненные поля сохраняются автоматически в этом браузере. «Редактировать текст» — можно переписать любой пункт под свой офис. «Печать / PDF» → выберите «Сохранить как PDF» или принтер. Тумблер «чистый бланк / с отметками» решает, печатать ли галочки.</p>
+
+<!-- ===================== DOCUMENT ===================== -->
+<div class="page">
+<div id="doc">
+
+  <!-- HEADER -->
+  <header class="doc-header">
+    <div>
+      <h1 data-editable>Инструкция и чек-лист уборки IT-офиса</h1>
+      <div class="sub" data-editable>Внутренний стандарт. Читать перед началом работы.</div>
+    </div>
+    <table class="meta">
+      <tr><td class="k">Объект</td><td class="v"><span class="rich" contenteditable="true" data-field="obj" data-rich>офис до 100 м², до 15 чел.</span></td></tr>
+      <tr><td class="k">График</td><td class="v">Вт + Чт, рано утром до прихода</td></tr>
+      <tr><td class="k">Пол</td><td class="v">ламинат / паркет</td></tr>
+      <tr><td class="k">Зоны</td><td class="v">опенспейс · ресепшен · кухня · санузел</td></tr>
+    </table>
+  </header>
+  <hr class="accent-rule">
+
+  <!-- 01 -->
+  <section class="section" id="sec-1">
+    <div class="section-num">01</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-editable>Главные правила (IT-специфика — читать обязательно)</span></h2>
+    <hr class="hr">
+    <p class="lead" data-editable>В IT-офисе главная ценность — техника и документы на столах. Большинство «катастроф» — это залитая клавиатура, выдернутый провод и выброшенная нужная бумажка. Эти правила важнее скорости.</p>
+    <ul class="checks">
+      <li class="check req"><input type="checkbox"><span class="txt" data-editable><strong>Технику не трогаем и не сдвигаем.</strong> Компьютеры, мониторы, ноутбуки, серверы, сетевые коробки, провода и удлинители — не отключать, не переставлять, не выдёргивать.</span></li>
+      <li class="check req"><input type="checkbox"><span class="txt" data-editable><strong>Средства НЕ распылять на технику и рядом с розетками.</strong> Любой спрей — только на салфетку, в стороне от техники; затем протираем.</span></li>
+      <li class="check req"><input type="checkbox"><span class="txt" data-editable><strong>Воду не лить на пол рядом с проводами и удлинителями.</strong> Швабра — хорошо отжатая.</span></li>
+      <li class="check req"><input type="checkbox"><span class="txt" data-editable><strong>Ламинат моем влажной (отжатой), а не мокрой шваброй.</strong> Луж быть не должно — от воды разбухают стыки.</span></li>
+      <li class="check req"><input type="checkbox"><span class="txt" data-editable><strong>Бумаги, стикеры, флешки, провода, мелочь на столах — НЕ выбрасываем.</strong> Мусор = только очевидный (стаканчики, обёртки, в корзине). Сомневаешься — оставь на месте.</span></li>
+      <li class="check req"><input type="checkbox"><span class="txt" data-editable><strong>Оборудование не выключаем.</strong> Если что-то пищит/мигает — это нормально, не трогаем.</span></li>
+      <li class="check req"><input type="checkbox"><span class="txt" data-editable><strong>Окна/розетки/щитки</strong> при уборке не трогаем (окна — отдельная услуга по графику).</span></li>
+      <li class="check req"><input type="checkbox"><span class="txt" data-editable>Заметили поломку, протечку, разбитое, странный запах — <strong>не убираем сами, сообщаем ответственному.</strong></span></li>
+    </ul>
+    <div class="fldrow">
+      <label>Ответственный по офису:</label><input class="fld" data-field="resp" style="min-width:180px">
+      <label>Телефон:</label><input class="fld" type="tel" data-field="resp_tel" style="min-width:150px">
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="section" id="sec-2">
+    <div class="section-num">02</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V5a3 3 0 0 1 6 0v3"/></svg><span data-editable>Инвентарь и расходники</span></h2>
+    <hr class="hr">
+    <ul class="checks cols">
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Швабра-моп с отжимом (флаундер) + ведро с отжимом (лучше двухсекционное)</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Микрофибра с <strong>цветовым кодированием</strong> (см. ниже)</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Распылители (бутылки) под рабочие растворы, подписанные</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Перчатки (отдельные для санузла и для кухни)</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Мусорные пакеты разных объёмов</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Сгон (стяжка) для окон + телескопическая штанга</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Сухие микрофибры для пыли вокруг техники</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Запас расходников: туалетная бумага, мыло, бумажные полотенца, губки, средство для посуды</span></li>
+    </ul>
+    <h3 data-editable>Цветовое кодирование микрофибры</h3>
+    <p class="lead" data-editable>Профстандарт, чтобы не разносить бактерии между зонами. Тряпки разных зон не смешиваем и стираем раздельно.</p>
+    <table class="t">
+      <thead><tr><th style="width:42%">Цвет</th><th>Где использовать</th></tr></thead>
+      <tbody>
+        <tr><td><span class="dot red"></span><b>Красный</b></td><td data-editable>Санузел (унитаз и зона около него)</td></tr>
+        <tr><td><span class="dot blue"></span><b>Синий</b></td><td data-editable>Общие поверхности: столы, подоконники, двери, ресепшен</td></tr>
+        <tr><td><span class="dot green"></span><b>Зелёный</b></td><td data-editable>Кухня: столешница, раковина, техника на кухне</td></tr>
+        <tr><td><span class="dot yellow"></span><b>Жёлтый</b></td><td data-editable>Раковины и зеркала в санузле (кроме унитаза)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 03 -->
+  <section class="section" id="sec-3">
+    <div class="section-num">03</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3l3 3-7 7-3-3z"/><path d="M11 6l-6 9-2 6 6-2 9-6"/></svg><span data-editable>Технология (порядок действий — всегда одинаковый)</span></h2>
+    <hr class="hr">
+    <ol style="margin:0;padding-left:20px">
+      <li data-editable><strong>Проветрить</strong> помещения (если возможно).</li>
+      <li data-editable><strong>Сверху вниз:</strong> сначала пыль с высоких поверхностей → столы/поверхности → в последнюю очередь пол.</li>
+      <li data-editable><strong>От дальнего угла к выходу</strong> — чтобы не ходить по вымытому полу.</li>
+      <li data-editable>Сначала <strong>сухая уборка</strong> (пыль, мусор), потом <strong>влажная</strong>.</li>
+      <li data-editable>Пол — <strong>в самом конце</strong>, отжатой шваброй, двигаясь к двери.</li>
+    </ol>
+  </section>
+
+  <!-- 04 -->
+  <section class="section" id="sec-4">
+    <div class="section-num">04</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.5h6V4"/><path d="M8.5 10l1.5 1.5L13 8"/><path d="M8.5 16l1.5 1.5L13 14"/></svg><span data-editable>Чек-лист каждой уборки (вторник и четверг)</span></h2>
+    <hr class="hr">
+    <div class="cartouche">
+      <div class="perf"></div><span class="perf-label no-print">бланк дня · можно печатать пачкой</span>
+      <div class="day-fields">
+        <div class="f"><label>Дата</label><input class="fld" type="date" data-field="d_date" data-clearable></div>
+        <div class="f"><label>Исполнитель</label><input class="fld" data-field="d_exec" data-clearable></div>
+        <div class="f"><label>Время</label><span>с <input class="fld" type="time" data-field="d_from" data-clearable style="min-width:80px"> до <input class="fld" type="time" data-field="d_to" data-clearable style="min-width:80px"></span></div>
+      </div>
+      <div class="progress screen-only">
+        <div class="track"><div class="bar" id="progbar"></div></div>
+        <div class="lbl" id="proglbl">0 / 0 выполнено</div>
+      </div>
+
+      <div class="subsec">
+        <h4><span data-editable>4.1. Опенспейс и рабочие места</span><span class="subcount screen-only">0/0</span></h4><hr class="subhr">
+        <ul class="checks">
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Собрать очевидный мусор со столов и пола (стаканчики, обёртки) — <strong>бумаги/вещи не трогать</strong></span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вынести мусор из корзин, заменить пакеты</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable><strong>Сортировка мусора:</strong> бумага/картон и пластик — в разные пакеты</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Протереть свободные поверхности столов <strong>вокруг техники</strong> (спрей — на салфетку)</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Протереть подоконники, дверные ручки, выключатели (антибактериальной салфеткой)</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Полить растения (по графику полива — см. примечание)</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Пыль с открытых поверхностей (полки, тумбы)</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вымыть пол отжатой шваброй (ламинат — без луж), от дальнего угла к выходу</span></li>
+        </ul>
+      </div>
+
+      <div class="subsec">
+        <h4><span class="ztag"><span class="dot blue"></span>синий</span> <span data-editable>4.2. Прихожая / ресепшен</span><span class="subcount screen-only">0/0</span></h4><hr class="subhr">
+        <ul class="checks">
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Протереть стойку ресепшен, поверхности</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Привести в порядок входную зону, коврик вытрясти/пропылесосить</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Зеркало/стеклянные двери — без разводов</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вынести мусор из корзины</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вымыть пол</span></li>
+        </ul>
+      </div>
+
+      <div class="subsec">
+        <h4><span class="ztag"><span class="dot green"></span>зелёный</span> <span data-editable>4.3. Кухонная зона</span><span class="subcount screen-only">0/0</span></h4><hr class="subhr">
+        <ul class="checks">
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вымыть посуду / загрузить-разгрузить посудомойку</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Протереть столешницу, стол, раковину (жироудалитель → смыть)</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Протереть фасады, микроволновку (внутри/снаружи), кофемашину снаружи</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Холодильник снаружи; внутри — по графику (см. еженедельный)</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вынести мусор, заменить пакет, протереть бак</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Пополнить: губки, средство для посуды, бумажные полотенца</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вымыть пол</span></li>
+        </ul>
+      </div>
+
+      <div class="subsec">
+        <h4><span class="ztag"><span class="dot red"></span>красный</span><span class="ztag"><span class="dot yellow"></span>жёлтый</span> <span data-editable>4.4. Санузел</span><span class="subcount screen-only">0/0</span></h4><hr class="subhr">
+        <ul class="checks">
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Унитаз: чистящее + дезинфекция (красный инвентарь)</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Раковина, смеситель, зеркало (жёлтый инвентарь)</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Пополнить: туалетная бумага, мыло, бумажные полотенца</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вынести мусор</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Вымыть пол, продезинфицировать</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Проверить запах (освежитель/нейтрализатор)</span></li>
+        </ul>
+      </div>
+
+      <div class="subsec">
+        <h4><span data-editable>4.5. Завершение</span><span class="subcount screen-only">0/0</span></h4><hr class="subhr">
+        <ul class="checks">
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Проверить, что техника не сдвинута, провода на местах</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Выключить свет, закрыть окна</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Инвентарь промыть, тряпки развесить/в стирку</span></li>
+          <li class="check"><input type="checkbox"><span class="txt" data-editable>Отметить выполнение и оставить комментарии (ниже)</span></li>
+        </ul>
+        <h3 data-editable>Комментарии / что закончилось / что заметили</h3>
+        <div class="lined rich" contenteditable="true" data-field="d_comments" data-rich data-clearable data-ph="Заметки: что закончилось из расходников, что требует внимания…"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="section" id="sec-5">
+    <div class="section-num">05</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/><path d="M7 13l2 2 3-3"/></svg><span data-editable>Еженедельно / раз в 2 недели (добавляется к обычной уборке)</span></h2>
+    <hr class="hr">
+    <ul class="checks cols">
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Холодильник внутри: убрать просрочку (с предупреждением), протереть полки</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Плинтусы, ножки столов, нижние поверхности — пыль</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Двери полностью (полотно + ручки + торцы)</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Стеклянные перегородки/двери целиком</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Радиаторы, подоконники тщательно</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Мягкая мебель/кресла в зоне отдыха — пыль/пятна</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Чайник/кофемашина — накипь по необходимости</span></li>
+    </ul>
+  </section>
+
+  <!-- 06 -->
+  <section class="section" id="sec-6">
+    <div class="section-num">06</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4M8 13h8M8 17h5"/></svg><span data-editable>Ежемесячно</span></h2>
+    <hr class="hr">
+    <ul class="checks cols">
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Пыль с верхних поверхностей шкафов, светильников</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Вентиляционные решётки от пыли</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Точечная чистка стен/пятен</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Генеральная кухня (фасады, вытяжка, под техникой)</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Ревизия расходников и инвентаря, заявка на докупку</span></li>
+    </ul>
+  </section>
+
+  <!-- 07 -->
+  <section class="section" id="sec-7">
+    <div class="section-num">07</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M12 3v18M4 9h16M4 15h16"/></svg><span data-editable>Мытьё окон — дополнительная услуга (по согласованию, ~1 раз в месяц/квартал)</span></h2>
+    <hr class="hr">
+    <ul class="checks">
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Стёкла изнутри (сгон + средство для стекол, без разводов)</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Рамы и подоконники</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Стёкла снаружи (только при безопасном доступе)</span></li>
+      <li class="check"><input type="checkbox"><span class="txt" data-editable>Москитные сетки (по сезону)</span></li>
+    </ul>
+    <p class="lead" data-editable>Оплата и периодичность мытья окон — отдельно от основной уборки. Фиксировать дату выполнения.</p>
+  </section>
+
+  <!-- 08 -->
+  <section class="section" id="sec-8">
+    <div class="section-num">08</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.5 15h9"/></svg><span data-editable>Подбор профессиональной химии</span></h2>
+    <hr class="hr">
+    <p class="lead" data-editable>Берём концентраты — дешевле в пересчёте и экономичнее. Главное для вашего пола: pH-нейтральное средство (щёлочь и кислота портят ламинат).</p>
+    <div class="segs">
+      <div class="seg gold"><div class="tier"><span class="pip"></span>Премиум-B2B</div><p data-editable><b>Kiehl, Ecolab, Diversey</b> (TASKI/Suma), Dr.Schnell, Buzil, Tana, Lakma Pro. Лучшее качество, канистры 5–10 л через дилеров. Для маленького офиса избыточно.</p></div>
+      <div class="seg silver"><div class="tier"><span class="pip"></span>Средний проф <small>— оптимум</small></div><p data-editable><b>Pro-Brite</b>, Lakma. Настоящая профхимия, доступно и поштучно. <b>Рекомендуется для вашего офиса.</b></p></div>
+      <div class="seg bronze"><div class="tier"><span class="pip"></span>Бюджет / прозьюмер</div><p data-editable><b>Grass</b>, Sanfor Professional. Корни в автохимии, масс-маркет. Рабочее, но нижний тир — не «профстандарт».</p></div>
+    </div>
+    <table class="t">
+      <thead><tr><th style="width:3%">№</th><th style="width:22%">Назначение</th><th>Рекоменд. (средний проф)</th><th>Премиум</th><th>Бюджет</th><th>Дозировка</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td data-editable><b>Пол (ламинат) — нейтральное</b></td><td class="rec" data-editable>Pro-Brite «Laminol»</td><td data-editable>TASKI «Jontec 300» · Kiehl «Econa»</td><td data-editable>Grass «Arena»/«Floor Wash»</td><td data-editable>ежедн. 5–10 мл/л · ген. 25–50 мл/л</td></tr>
+        <tr><td>2</td><td data-editable><b>Универсал</b> (столы, двери, ресепшен)</td><td class="rec" data-editable>Pro-Brite «Spray Cleaner»</td><td data-editable>Dr.Schnell «Forol» · TASKI «Sprint»</td><td data-editable>Grass «Universal Cleaner»</td><td data-editable>спрей / по этикетке</td></tr>
+        <tr><td>3</td><td data-editable><b>Стёкла и зеркала</b></td><td class="rec" data-editable>Pro-Brite «Glass Cleaner»</td><td data-editable>Kiehl «Brilliant» · TASKI «Sprint GlassClean»</td><td data-editable>Grass «Clean Glass»</td><td data-editable>спрей</td></tr>
+        <tr><td>4</td><td data-editable><b>Кухня / жир</b></td><td data-editable>—</td><td data-editable><b>Diversey «Suma»</b> · Ecolab</td><td data-editable>Grass «Azelit» (ходовой)</td><td data-editable>спрей, ≤2 мин, смыть</td></tr>
+        <tr><td>5</td><td data-editable><b>Посуда</b> (руками)</td><td data-editable>проф. средство для посуды</td><td data-editable>—</td><td data-editable>—</td><td data-editable>по инструкции</td></tr>
+        <tr><td>5а</td><td data-editable><b>Посудомойка</b></td><td data-editable>Finish / Somat Professional</td><td data-editable>—</td><td data-editable>—</td><td data-editable>по инструкции</td></tr>
+        <tr><td>6</td><td data-editable><b>Санузел</b></td><td class="rec" data-editable>Pro-Brite «White&nbsp;&amp;&nbsp;Shine» / Domestos Prof.</td><td data-editable>Kiehl «Sanikal» · TASKI «Sani»</td><td data-editable>—</td><td data-editable>по инструкции</td></tr>
+        <tr><td>7</td><td data-editable><b>Контактные поверхности</b></td><td data-editable>антибакт. спрей · дез-салфетки</td><td data-editable>—</td><td data-editable>—</td><td data-editable>протирать</td></tr>
+        <tr><td>8</td><td data-editable><b>Пыль вокруг техники</b></td><td data-editable>микрофибра — без спрея!</td><td data-editable>—</td><td data-editable>—</td><td data-editable>насухо</td></tr>
+      </tbody>
+    </table>
+    <div class="danger">
+      <h4>⚠ Запрещено</h4>
+      <ul>
+        <li data-editable><b>Для ламината</b> — средства с аммиаком, кислотой, абразивы, «всё для пола без разбора» (портят покрытие).</li>
+        <li data-editable><b>Не смешивать</b> хлорные средства (санузел) с кислотными — выделяется опасный газ.</li>
+        <li data-editable>Спрей для стекол <b>не применять на мониторах</b> — у них своё покрытие (мониторы вообще не трогаем).</li>
+        <li data-editable>Все концентраты разводить <b>по инструкции на этикетке</b> — «погуще» не значит «лучше».</li>
+      </ul>
+    </div>
+    <h3 data-editable>Стартовый набор для закупки (на маленький офис)</h3>
+    <ul class="kit">
+      <li><span class="name" data-editable>Концентрат для ламината (нейтральный) — 1 л</span><label class="opt"><input type="checkbox">купить</label><label class="opt"><input type="checkbox">в наличии</label></li>
+      <li><span class="name" data-editable>Универсальный спрей + запасной концентрат</span><label class="opt"><input type="checkbox">купить</label><label class="opt"><input type="checkbox">в наличии</label></li>
+      <li><span class="name" data-editable>Средство для стекол</span><label class="opt"><input type="checkbox">купить</label><label class="opt"><input type="checkbox">в наличии</label></li>
+      <li><span class="name" data-editable>Антижир для кухни</span><label class="opt"><input type="checkbox">купить</label><label class="opt"><input type="checkbox">в наличии</label></li>
+      <li><span class="name" data-editable>Средство для посуды + таблетки ПММ</span><label class="opt"><input type="checkbox">купить</label><label class="opt"><input type="checkbox">в наличии</label></li>
+      <li><span class="name" data-editable>Средство для санузла + дезинфекция</span><label class="opt"><input type="checkbox">купить</label><label class="opt"><input type="checkbox">в наличии</label></li>
+      <li><span class="name" data-editable>Антибактериальные салфетки — 1 упаковка</span><label class="opt"><input type="checkbox">купить</label><label class="opt"><input type="checkbox">в наличии</label></li>
+      <li><span class="name" data-editable>Микрофибры 4 цветов, перчатки, пакеты, губки</span><label class="opt"><input type="checkbox">купить</label><label class="opt"><input type="checkbox">в наличии</label></li>
+    </ul>
+  </section>
+
+  <!-- 09 -->
+  <section class="section" id="sec-9">
+    <div class="section-num">09</div>
+    <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c3-1 4-3 6-3s2 2 4 2 3-3 5-3"/><path d="M3 21h18"/><path d="M14 4l4 4-8 8H6v-4z"/></svg><span data-editable>Примечания и контроль (приёмка работ)</span></h2>
+    <hr class="hr">
+    <ul style="margin:0 0 10px;padding-left:18px">
+      <li data-editable><b>Полив растений:</b> 1–2 раза в неделю (земля подсохла на 2–3 см → полить; стоит вода в поддоне → не поливать). Уточнить список «капризных».</li>
+      <li data-editable><b>Приёмка:</b> ответственный сотрудник раз в неделю проверяет качество и ставит отметку.</li>
+      <li data-editable><b>Расходники:</b> о заканчивающихся сообщать заранее, не по факту «закончилось».</li>
+    </ul>
+    <table class="t acc">
+      <thead><tr><th style="width:16%">Дата приёмки</th><th style="width:24%">Принял (ФИО)</th><th>Замечания</th><th style="width:20%">Подпись</th></tr></thead>
+      <tbody id="accBody"></tbody>
+    </table>
+    <div class="rowctl no-print">
+      <button class="btn ghost" id="addRow">+ строка</button>
+      <button class="btn ghost" id="delRow">− строка</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span data-editable>Инструкция по уборке IT-офиса</span>
+    <span class="rev">Ред. <input class="fld" data-field="rev_no" style="min-width:50px"> от <input class="fld" type="date" data-field="rev_date"></span>
+  </div>
+
+</div><!-- /#doc -->
+</div><!-- /.page -->
+
+<script>
+(function(){
+  "use strict";
+  var LS_KEY='itclean_v1';
+  var store={checks:{},fields:{},edits:{},accRows:3};
+  var doc=document.getElementById('doc');
+  var accBody=document.getElementById('accBody');
+  var MIN_ROWS=3;
+
+  function load(){
+    try{var s=JSON.parse(localStorage.getItem(LS_KEY)); if(s){store=s;}}catch(e){}
+    store.checks=store.checks||{}; store.fields=store.fields||{}; store.edits=store.edits||{};
+    store.accRows=store.accRows||MIN_ROWS;
+  }
+  var saveT;
+  function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ try{localStorage.setItem(LS_KEY,JSON.stringify(store));}catch(e){} },120); }
+
+  function buildAccRows(n){
+    accBody.innerHTML='';
+    for(var r=0;r<n;r++){
+      var tr=document.createElement('tr');
+      tr.innerHTML=
+        '<td><span class="rich" contenteditable="true" data-field="acc'+r+'_date" data-rich data-clearable data-ph="дата"></span></td>'+
+        '<td><span class="rich" contenteditable="true" data-field="acc'+r+'_who" data-rich data-clearable data-ph="ФИО"></span></td>'+
+        '<td><span class="rich" contenteditable="true" data-field="acc'+r+'_note" data-rich data-clearable data-ph="замечания"></span></td>'+
+        '<td><span class="rich sig" contenteditable="true" data-field="acc'+r+'_sig" data-rich data-clearable></span></td>';
+      accBody.appendChild(tr);
+    }
+  }
+
+  function assignIds(){
+    var cbs=doc.querySelectorAll('input[type=checkbox]');
+    for(var i=0;i<cbs.length;i++){ if(!cbs[i].dataset.id) cbs[i].dataset.id='k'+i; }
+    var eds=doc.querySelectorAll('[data-editable]');
+    for(var j=0;j<eds.length;j++){ if(!eds[j].dataset.eid) eds[j].dataset.eid='e'+j; }
+  }
+
+  function hydrate(){
+    var eds=doc.querySelectorAll('[data-editable]');
+    for(var j=0;j<eds.length;j++){ var ev=store.edits[eds[j].dataset.eid]; if(ev!=null) eds[j].innerHTML=ev; }
+    var cbs=doc.querySelectorAll('input[type=checkbox]');
+    for(var i=0;i<cbs.length;i++){ var cv=store.checks[cbs[i].dataset.id]; if(cv!=null) cbs[i].checked=!!cv; }
+    var flds=doc.querySelectorAll('[data-field]');
+    for(var k=0;k<flds.length;k++){
+      var f=flds[k], v=store.fields[f.dataset.field];
+      if(v==null) continue;
+      if(f.hasAttribute('data-rich')) f.innerHTML=v; else f.value=v;
+    }
+  }
+
+  function recalcProgress(){
+    var s=document.getElementById('sec-4'); if(!s) return;
+    var boxes=s.querySelectorAll('input[type=checkbox]'), total=boxes.length, done=0;
+    for(var i=0;i<boxes.length;i++){ if(boxes[i].checked) done++; }
+    var pct=total?Math.round(done/total*100):0;
+    var bar=document.getElementById('progbar'); if(bar) bar.style.width=pct+'%';
+    var lbl=document.getElementById('proglbl'); if(lbl) lbl.textContent=done+' / '+total+' выполнено';
+    var subs=s.querySelectorAll('.subsec');
+    for(var q=0;q<subs.length;q++){
+      var bx=subs[q].querySelectorAll('input[type=checkbox]'), d=0;
+      for(var w=0;w<bx.length;w++){ if(bx[w].checked) d++; }
+      var m=subs[q].querySelector('.subcount'); if(m) m.textContent=d+'/'+bx.length;
+    }
+  }
+
+  // ---- events (delegation) ----
+  doc.addEventListener('change',function(e){
+    var t=e.target;
+    if(t.matches('input[type=checkbox]')){
+      if(t.dataset.id){ store.checks[t.dataset.id]=t.checked; save(); }
+      recalcProgress();
+    } else if(t.matches('[data-field]') && !t.hasAttribute('data-rich')){
+      store.fields[t.dataset.field]=t.value; save();
+    }
+  });
+  doc.addEventListener('input',function(e){
+    var t=e.target;
+    if(t.matches('[data-field][data-rich]')){
+      store.fields[t.dataset.field]=t.innerHTML; save();
+    } else if(t.matches('[data-field]') && !t.hasAttribute('data-rich')){
+      store.fields[t.dataset.field]=t.value; save();
+    } else if(document.body.classList.contains('editing') && t.matches('[data-editable]')){
+      store.edits[t.dataset.eid]=t.innerHTML; save();
+    }
+  });
+
+  // ---- toolbar ----
+  var editBtn=document.getElementById('editBtn');
+  editBtn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('editing');
+    var eds=doc.querySelectorAll('[data-editable]');
+    for(var i=0;i<eds.length;i++){ eds[i].contentEditable=on?'true':'false'; }
+    editBtn.textContent=on?'✓ Готово':'✎ Редактировать текст';
+    editBtn.setAttribute('aria-pressed',on);
+  });
+
+  var marksBtn=document.getElementById('marksBtn');
+  marksBtn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('print-marks');
+    marksBtn.setAttribute('aria-pressed',on);
+    marksBtn.textContent=on?'🖨 Печать: с отметками':'🖨 Печать: чистый бланк';
+  });
+
+  document.getElementById('printBtn').addEventListener('click',function(){ window.print(); });
+
+  document.getElementById('clearBtn').addEventListener('click',function(){
+    if(!confirm('Снять все галочки и очистить заполненные поля (дата, исполнитель, время, комментарии, приёмка)? Правки текста сохранятся.')) return;
+    var cbs=doc.querySelectorAll('input[type=checkbox]');
+    for(var i=0;i<cbs.length;i++){ cbs[i].checked=false; }
+    var iv=doc.querySelectorAll('input[data-clearable], textarea[data-clearable]');
+    for(var j=0;j<iv.length;j++){ iv[j].value=''; }
+    var rv=doc.querySelectorAll('[data-rich][data-clearable]');
+    for(var k=0;k<rv.length;k++){ rv[k].innerHTML=''; }
+    var cl=doc.querySelectorAll('[data-clearable]');
+    for(var n=0;n<cl.length;n++){ if(cl[n].dataset.field) delete store.fields[cl[n].dataset.field]; }
+    store.checks={}; save(); recalcProgress();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click',function(){
+    if(!confirm('Сбросить ВСЁ к исходному шаблону? Будут удалены отметки, заполненные поля и правки текста.')) return;
+    localStorage.removeItem(LS_KEY); location.reload();
+  });
+
+  // ---- acceptance rows ----
+  document.getElementById('addRow').addEventListener('click',function(){
+    store.accRows++; buildAccRows(store.accRows); assignIds(); hydrate(); save();
+  });
+  document.getElementById('delRow').addEventListener('click',function(){
+    if(store.accRows<=MIN_ROWS){ return; }
+    // drop saved fields of the last row
+    var r=store.accRows-1;
+    ['date','who','note','sig'].forEach(function(suf){ delete store.fields['acc'+r+'_'+suf]; });
+    store.accRows--; buildAccRows(store.accRows); assignIds(); hydrate(); save();
+  });
+
+  // ---- init ----
+  load();
+  buildAccRows(store.accRows);
+  assignIds();
+  hydrate();
+  recalcProgress();
+})();
+</script>
+</body>
+</html>
